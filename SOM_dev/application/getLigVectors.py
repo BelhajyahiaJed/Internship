@@ -1,24 +1,24 @@
 #!/usr/bin/env python
-import numpy
-import PCA
+import numpy as np
+import PCA # type: ignore
 import sys
 import pickle
 import glob
-import ConfigParser
+import configparser
 import splitDockMap
 import math
 
 configFileName = sys.argv[1]
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config.read(configFileName)
 
-ligCharges = numpy.load(Config.get('pc', 'charges'))
-ligAtomIds = numpy.load(Config.get('pc', 'atomIds'))
-coordMat = numpy.load(Config.get('pc','coordMat'))
+ligCharges = np.load(Config.get('pc', 'charges'))
+ligAtomIds = np.load(Config.get('pc', 'atomIds'))
+coordMat = np.load(Config.get('pc','coordMat'))
 align = Config.getboolean('pc', 'align')
 residueDescription = Config.getboolean('pc', 'residue')
 if residueDescription:
- resTypes = numpy.load(Config.get('pc','resTypes'))
+ resTypes = np.load(Config.get('pc','resTypes'))
 
 def pdbBoxWriter(com, vectors, outFileName='ligBox.pdb'):
  outFile = open(outFileName, 'w')
@@ -41,18 +41,18 @@ def getPC(coords, outFileName='ligBox.pdb'):
   if size != 0 :
    eigenVectors, eigenValues = PCA.princomp(coords.T, numpc=3, getEigenValues=True)
    com = coords.mean(axis=0)
-   projection = numpy.dot(coords-com,eigenVectors)
-   signs = numpy.sign(numpy.sign(projection).sum(axis=0))
-   signs2 = numpy.sign(projection[numpy.abs(projection).argmax(axis=0)].diagonal())
+   projection = np.dot(coords-com,eigenVectors)
+   signs = np.sign(np.sign(projection).sum(axis=0))
+   signs2 = np.sign(projection[np.abs(projection).argmax(axis=0)].diagonal())
    signs[signs==0] = signs2[signs==0]
    eigenVectors = eigenVectors*signs
-   vectors = com + eigenVectors.T * numpy.atleast_2d(numpy.sqrt(eigenValues)).T
+   vectors = com + eigenVectors.T * np.atleast_2d(np.sqrt(eigenValues)).T
   elif size == 0:
-   com = numpy.zeros((3))
-   vectors = numpy.zeros((3,3))
+   com = np.zeros((3))
+   vectors = np.zeros((3,3))
  else:
   com = coords.flatten()
-  vectors = numpy.zeros((3,3))
+  vectors = np.zeros((3,3))
 # pdbBoxWriter(com, vectors, outFileName)
  return com, vectors
 
@@ -61,8 +61,8 @@ def getDescriptors(inputs):
  com_global, vectors_global = getPC(coords, 'ligBox_global.pdb')
  coords_plus = coords[charges>=1]
  coords_minus = coords[charges<=-1]
- coords_polar = coords[numpy.logical_or(numpy.logical_and(charges>-1,charges<=-0.5), numpy.logical_and(charges>=0.5,charges<1))]
- coords_hydrophobic = coords[numpy.logical_and(charges>-0.5,charges<0.5)]
+ coords_polar = coords[np.logical_or(np.logical_and(charges>-1,charges<=-0.5), np.logical_and(charges>=0.5,charges<1))]
+ coords_hydrophobic = coords[np.logical_and(charges>-0.5,charges<0.5)]
  com_plus, vectors_plus = getPC(coords_plus, 'ligBox_plus.pdb')
  com_minus, vectors_minus = getPC(coords_minus, 'ligBox_minus.pdb')
  com_polar, vectors_polar = getPC(coords_polar, 'ligBox_polar.pdb')
@@ -82,10 +82,10 @@ def getResidueDescriptors(inputs):
   else:
    resProperties.append('nd')
  com_global, vectors_global = getPC(coords, 'ligBox_global.pdb')
- sel_plus = numpy.array([e=='plus' for e in resProperties])
- sel_minus = numpy.array([e=='minus' for e in resProperties])
- sel_polar = numpy.array([e=='polar' for e in resProperties])
- sel_hydrophobic = numpy.array([e=='hydrophobic' for e in resProperties])
+ sel_plus = np.array([e=='plus' for e in resProperties])
+ sel_minus = np.array([e=='minus' for e in resProperties])
+ sel_polar = np.array([e=='polar' for e in resProperties])
+ sel_hydrophobic = np.array([e=='hydrophobic' for e in resProperties])
 # print 'plus: %s'%resTypes[sel_plus]
 # print 'minus: %s'%resTypes[sel_minus]
 # print 'polar: %s'%resTypes[sel_polar]
@@ -107,7 +107,7 @@ def rotate_descriptors(rotation_matrix, descriptor):
  descriptor = descriptor.reshape(card/3,3)
  rotate_descriptor = []
  for d in descriptor:
-  rotate_descriptor.extend(numpy.dot(rotation_matrix, d).tolist())
+  rotate_descriptor.extend(np.dot(rotation_matrix, d).tolist())
 #  rotate_descriptor.extend(d.tolist())
  return rotate_descriptor
 
@@ -115,11 +115,11 @@ def rotation_matrix(angle, direction, point=None):
  """Return matrix to rotate about axis defined by point and direction.
 
  >>> R = rotation_matrix(math.pi/2, [0, 0, 1], [1, 0, 0])
- >>> numpy.allclose(numpy.dot(R, [0, 0, 0, 1]), [1, -1, 0, 1])
+ >>> np.allclose(np.dot(R, [0, 0, 0, 1]), [1, -1, 0, 1])
  True
  >>> angle = (random.random() - 0.5) * (2*math.pi)
- >>> direc = numpy.random.random(3) - 0.5
- >>> point = numpy.random.random(3) - 0.5
+ >>> direc = np.random.random(3) - 0.5
+ >>> point = np.random.random(3) - 0.5
  >>> R0 = rotation_matrix(angle, direc, point)
  >>> R1 = rotation_matrix(angle-2*math.pi, direc, point)
  >>> is_same_transform(R0, R1)
@@ -128,10 +128,10 @@ def rotation_matrix(angle, direction, point=None):
  >>> R1 = rotation_matrix(-angle, -direc, point)
  >>> is_same_transform(R0, R1)
  True
- >>> I = numpy.identity(4, numpy.float64)
- >>> numpy.allclose(I, rotation_matrix(math.pi*2, direc))
+ >>> I = np.identity(4, np.float64)
+ >>> np.allclose(I, rotation_matrix(math.pi*2, direc))
  True
- >>> numpy.allclose(2, numpy.trace(rotation_matrix(math.pi/2,
+ >>> np.allclose(2, np.trace(rotation_matrix(math.pi/2,
  ...                                               direc, point)))
  True
 
@@ -140,34 +140,34 @@ def rotation_matrix(angle, direction, point=None):
  cosa = math.cos(angle)
 # direction = unit_vector(direction[:3])
  # rotation matrix around unit vector
- R = numpy.diag([cosa, cosa, cosa])
- R += numpy.outer(direction, direction) * (1.0 - cosa)
+ R = np.diag([cosa, cosa, cosa])
+ R += np.outer(direction, direction) * (1.0 - cosa)
  direction *= sina
- R += numpy.array([[ 0.0,         -direction[2],  direction[1]],
+ R += np.array([[ 0.0,         -direction[2],  direction[1]],
                    [ direction[2], 0.0,          -direction[0]],
                    [-direction[1], direction[0],  0.0]])
- M = numpy.identity(4)
+ M = np.identity(4)
  M[:3, :3] = R
  if point is not None:
   # rotation not around origin
-  point = numpy.array(point[:3], dtype=numpy.float64, copy=False)
-  M[:3, 3] = point - numpy.dot(R, point)
+  point = np.array(point[:3], dtype=np.float64, copy=False)
+  M[:3, 3] = point - np.dot(R, point)
  return M
 
 def getNorm(v):
- return numpy.sqrt(numpy.dot(v,v))
+ return np.sqrt(np.dot(v,v))
 
 def getRotationParameters(v1,v2):
  norm1 = getNorm(v1)
  norm2 = getNorm(v2)
  v1 = v1/norm1
  v2 = v2/norm2
- angle = numpy.arccos(numpy.dot(v1,v2))
- direction = numpy.cross(v1,v2)
+ angle = np.arccos(np.dot(v1,v2))
+ direction = np.cross(v1,v2)
  direction = direction/getNorm(direction)
  return angle, direction
 
-index = numpy.where(ligAtomIds==1)[0].tolist()
+index = np.where(ligAtomIds==1)[0].tolist()
 index.append(coordMat.shape[0])
 c = 0
 coords_split = []
@@ -200,39 +200,39 @@ while k < n:
   input = [coords_k, charges_k]
   descriptors.append(getDescriptors(input))
  k+=1
-descriptors = numpy.array(descriptors)
-descriptors[numpy.isnan(descriptors)] = 0
+descriptors = np.array(descriptors)
+descriptors[np.isnan(descriptors)] = 0
 if align:
  origins = descriptors[:,:3]
- translateDescriptors = numpy.zeros_like(descriptors)
+ translateDescriptors = np.zeros_like(descriptors)
  for i in range(0,60,3):
   translateDescriptors[:,i:i+3] = descriptors[:,i:i+3] - descriptors[:,:3]
  descriptors = translateDescriptors
  mapCom,mapNorm1,mapNorm2,mapNorm3,mapVectors1,mapVectors2,mapVectors3 = splitDockMap.splitMap(descriptors, 'global')
- #vRef = numpy.append(mapNorm1[0]*mapVectors1[0], mapNorm2[0]*mapVectors2[0]).reshape(2,3)
+ #vRef = np.append(mapNorm1[0]*mapVectors1[0], mapNorm2[0]*mapVectors2[0]).reshape(2,3)
  vRef = descriptors[0,3:12].reshape(3,3)
 # vRef[2]=0
  rotateDescriptors = []
  rotateCoords = []
  for i in range(mapVectors1.shape[0]):
-#  v = numpy.append(mapVectors1[i], mapVectors2[i], mapVectors3[i]).reshape(3,3)
+#  v = np.append(mapVectors1[i], mapVectors2[i], mapVectors3[i]).reshape(3,3)
   v = descriptors[i,3:12].reshape(3,3)
   angle, direction = getRotationParameters(v[0],vRef[0])
-  if numpy.isnan(getNorm(direction)):
+  if np.isnan(getNorm(direction)):
    direction = v[2]/getNorm(v[2])
   rotMat1 = rotation_matrix(angle,direction)[:3,:3]
-  angle, direction = getRotationParameters(numpy.dot(rotMat1, v[1]),vRef[1])
+  angle, direction = getRotationParameters(np.dot(rotMat1, v[1]),vRef[1])
   rotMat2 = rotation_matrix(angle,direction)[:3,:3]
-  rotMat = numpy.dot(rotMat2, rotMat1)
+  rotMat = np.dot(rotMat2, rotMat1)
   rotateDescriptors.append(rotate_descriptors(rotMat, descriptors[i]))
   coords_split[i] = coords_split[i] - origins[i]
-  rotateCoords.extend(numpy.dot(rotMat, coords_split[i].T).T.tolist())
- rotateDescriptors = numpy.array(rotateDescriptors)
- rotateCoords = numpy.array(rotateCoords)
+  rotateCoords.extend(np.dot(rotMat, coords_split[i].T).T.tolist())
+ rotateDescriptors = np.array(rotateDescriptors)
+ rotateCoords = np.array(rotateCoords)
  descriptors = rotateDescriptors
   
-numpy.save('inputMatrix.npy', descriptors)
-numpy.save('rotateCoords.npy', rotateCoords)
+np.save('inputMatrix.npy', descriptors)
+np.save('rotateCoords.npy', rotateCoords)
 sys.stdout.write('\ndone\n')
 #charges = params['charge']
 #getDescriptors([coords, params])
