@@ -3,11 +3,11 @@ import pickle
 import numpy
 import scipy.spatial
 import sys
-import ConfigParser
+import configparser
 
 if __name__ == '__main__':
  configFileName = sys.argv[1]
- Config = ConfigParser.ConfigParser()
+ Config = configparser.ConfigParser()
  Config.read(configFileName)
 
  Map = pickle.load(open(Config.get('snapshotIdMap', 'map')))
