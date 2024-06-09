@@ -185,7 +185,7 @@ class analysis:
    return xi_value
 
  def xiT(self):
-  print 'Finding the best clustering ...'
+  print ('Finding the best clustering ...')
   Tv = numpy.unique(self.distanceMatrix)/numpy.max(self.distanceMatrix)
   xiPrev = 0.
   Tprev = 0.
@@ -215,5 +215,5 @@ class analysis:
       xi_best = xi
     xiPrev = xi
     Tprev = T
-  print '\nBest clustering for threshold : %.2f; xi: %.2f' % (T_best, xi_best)
+  print("\nBest clustering for threshold : {:.2f}; xi: {:.2f}".format(T_best, xi_best))
   return T_best
