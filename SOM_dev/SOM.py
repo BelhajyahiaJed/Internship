@@ -14,6 +14,7 @@ import itertools
 import scipy.spatial
 import tarfile
 import os
+import ROCSOM
 
 class SOM3D:
  """
@@ -90,7 +91,7 @@ class SOM3D:
    # Matrix initialization
    if mapFileName == None:
     if randomInit:
-     print "Map initialization..."
+     print ("Map initialization...")
      maxinpvalue = self.inputvectors.max(axis=0)
      mininpvalue = self.inputvectors.min(axis=0)
      somShape = [self.X, self.Y, self.Z]
@@ -120,7 +121,7 @@ class SOM3D:
      sqev=numpy.sqrt(eival)[:3]
      if autoSizeMap:
       self.X,self.Y,self.Z=map(lambda x: int(round(x)),sqev/((numpy.prod(sqev)/(self.X*self.Y*self.Z))**(1./3))) # returns a size with axes size proportional to the eigenvalues and so that the total number of neurons is at least the number of neurons given in SOM.conf (x*Y*Z)
-      print "Size of map will be %dx%dx%d."%(self.X,self.Y,self.Z)
+      print("Size of map will be {}x{}x{}.".format(self.X, self.Y, self.Z))
      # (1,0)*(0,0) if mmt else (0,1)*(1,1)
      proj=numpy.dot(M.T,eivec) if mmt else numpy.dot(M,eivec)
      Cmin=proj.min(axis=0)
@@ -137,7 +138,7 @@ class SOM3D:
      self.M=numpy.dot(origrid.transpose([1,2,3,0]),eivec.T)+inputmean
    else:
     self.M = self.loadMap(mapFileName)
-   print "Shape of the SOM:%s"%str(self.M.shape)
+   print("Shape of the SOM: {}".format(str(self.M.shape)))
   self.distFunc = distFunc
 
  def loadMap(self, MapFile):
@@ -276,13 +277,13 @@ class SOM3D:
   if self.autoParam:
    self.epsilon_values = []
   Map = self.M
-  print 'Learning for %s vectors'%len(self.inputvectors)
+  print("Learning for {} vectors".format(len(self.inputvectors)))
   firstpass=0
   kdone=[]
   for trainingPhase in range(self.number_of_phase):
    kv=[]
    self.rhoValue = 0
-   print '%s iterations'%self.iterations[trainingPhase]
+   print("{} iterations".format(self.iterations[trainingPhase]))
    ## Progress bar
    tpn = trainingPhase + 1
    widgets = ['Training phase %s : ' % tpn, progressbar.Percentage(), progressbar.Bar(marker='=',left='[',right=']'), progressbar.ETA()]
@@ -296,7 +297,7 @@ class SOM3D:
       k = kv.pop()
      else:
       asarkd=numpy.asarray(kdone)
-      print "Computing epsilon values for the current map..."
+      print ("Computing epsilon values for the current map...")
       epsvalues=[ self.epsilon(k,self.findBMU(k,Map),Map) for k in asarkd ]
       indx=numpy.argsort(epsvalues)[::1 if self.autoParam else -1]
       kv = list(asarkd[indx])
@@ -625,7 +626,7 @@ class SOM3D:
   """
   Find the best clustering.
   """
-  print 'Finding the best clustering ...'
+  print ('Finding the best clustering ...')
 #  step = 0.01
 #  Tv = numpy.arange(0,1+step,step)
 #  clustersMap = self.clusterDiscovery(Map, 0)
@@ -678,12 +679,12 @@ class SOM3D:
    T_old = T
   self.xi_best = xi_value
   self.T_best = T_best
-  print '\nBest clustering for threshold : %.2f; xi: %.2f' % (T_best, xi_value)
+  print("\nBest clustering for threshold : {:.2f}; xi: {:.2f}".format(T_best, xi_value))
   return self.T_best
     
  def tree(self, Map, jobIndex=''):
   # useless (dixit guillaume)
-  print 'Building tree from Kohonen map'
+  print ('Building tree from Kohonen map')
   ### finding BMUs for Map
   BMUs = []
   for k in range(len(self.inputvectors)):
@@ -775,7 +776,7 @@ class SOM3D:
   #print keys
   length = [len(key) for key in keys]
   if max(length) > 2:
-   print 'Problem with tree building. More than two groups are found at the end of iterations'
+   print ('Problem with tree building. More than two groups are found at the end of iterations')
   distItems = dist.items()
   #print distItems
   sortList = []
@@ -824,7 +825,7 @@ class SOM3D:
      else:
       yield e
    newick = newick[0]
-   print '\nSOM hierarchical clustering: %s'%str(newick)
+   print("\nSOM hierarchical clustering: {}".format(str(newick)))
    l = list(flatten(newick))
    sortedClusters = []
    for e in l:
