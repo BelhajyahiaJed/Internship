@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+from SOM_dev.application.getClusters import getClusters
+from SOM_dev.application.getClusters import minimizeToCluster
+
 import numpy
 import scipy.ndimage
 import sys
@@ -34,7 +37,7 @@ class Clust3D(object):
 #  splitDockMap.get3Dvectors(mapCom_global[sel], mapVectors1_global[sel], mapNorm1_global[sel], 'global_c%s'%c)
    sortedClusterMat[sel] = c
    cId = numpy.where(cIds==i)[0][0]
-   print 'cId: %s, mean:%.2f, median: %.2f, min:%.2f'%(c, uMeans[cId], uMedians[cId], uMins[cId])
+   print ('cId: %s, mean:%.2f, median: %.2f, min:%.2f'%(c, uMeans[cId], uMedians[cId], uMins[cId]))
   numpy.save('clusterMat.npy', sortedClusterMat)
   SOM3DTools.vmdMap(sortedClusterMat, 'clusterMat.map')
   return sortedClusterMat
@@ -112,7 +115,7 @@ class Clust3D(object):
 #  splitDockMap.get3Dvectors(mapCom_global[sel], mapVectors1_global[sel], mapNorm1_global[sel], 'global_c%s'%c)
    sortedClusterMat[sel] = c
    cId = numpy.where(cIds==i)[0][0]
-   print 'cId: %s, mean:%.2f, median: %.2f, min:%.2f'%(c, uMeans[cId], uMedians[cId], uMins[cId])
+  print('cId: {}, mean: {:.2f}, median: {:.2f}, min: {:.2f}'.format(c, uMeans[cId], uMedians[cId], uMins[cId]))
   numpy.save('clusterMat.npy', sortedClusterMat)
   SOM3DTools.vmdMap(sortedClusterMat, 'clusterMat.map')
   return sortedClusterMat
@@ -155,7 +158,7 @@ class Clust3D(object):
 #  splitDockMap.get3Dvectors(mapCom_global[sel], mapVectors1_global[sel], mapNorm1_global[sel], 'global_c%s'%c)
    sortedClusterMat[sel] = c
    cId = numpy.where(cIds==i)[0][0]
-   print 'cId: %s, mean:%.2f, median: %.2f, min:%.2f'%(c, uMeans[cId], uMedians[cId], uMins[cId])
+  print('cId: {}, mean: {:.2f}, median: {:.2f}, min: {:.2f}'.format(c, uMeans[cId], uMedians[cId], uMins[cId]))
   numpy.save('clusterMat.npy', sortedClusterMat)
   SOM3DTools.vmdMap(sortedClusterMat, 'clusterMat.map')
   return sortedClusterMat
@@ -166,7 +169,7 @@ class Clust(object):
  def getClusters(map, uMatrix, relative_threshold):
   uMax = uMatrix.max()
   threshold = relative_threshold*uMax
-  clusterMat = SOMTools.continuousMap(scipy.ndimage.label(uMatrix<threshold)[0])
+  clusterMat = SOM3DTools.continuousMap(scipy.ndimage.label(uMatrix<threshold)[0])
   cIds = numpy.unique(clusterMat)[1:]
   uMeans = []
   uMins = []
@@ -189,9 +192,9 @@ class Clust(object):
 #  splitDockMap.get3Dvectors(mapCom_global[sel], mapVectors1_global[sel], mapNorm1_global[sel], 'global_c%s'%c)
    sortedClusterMat[sel] = c
    cId = numpy.where(cIds==i)[0][0]
-   print 'cId: %s, mean:%.2f, median: %.2f, min:%.2f'%(c, uMeans[cId], uMedians[cId], uMins[cId])
+  print('cId: {}, mean: {:.2f}, median: {:.2f}, min: {:.2f}'.format(c, uMeans[cId], uMedians[cId], uMins[cId]))
   numpy.save('clusterMat.npy', sortedClusterMat)
-  SOMTools.plotMat(sortedClusterMat, 'clusterMat.pdf', interpolation='nearest')
+  SOM3DTools.plotMat(sortedClusterMat, 'clusterMat.pdf', interpolation='nearest')
   return sortedClusterMat
 
  @staticmethod
@@ -213,7 +216,7 @@ class Clust(object):
  def getAllClusters(map, uMatrix, relative_threshold):
   uMax = uMatrix.max()
   threshold = relative_threshold*uMax
-  clusterMat = SOMTools.continuousMap(scipy.ndimage.label(uMatrix<threshold)[0])
+  clusterMat = SOM3DTools.continuousMap(scipy.ndimage.label(uMatrix<threshold)[0])
   cIds = numpy.unique(clusterMat)[1:]
   # right there we have enough to quit
   # now in this method, we don't want any point in cluster 0.
@@ -241,9 +244,9 @@ class Clust(object):
 #  splitDockMap.get3Dvectors(mapCom_global[sel], mapVectors1_global[sel], mapNorm1_global[sel], 'global_c%s'%c)
    sortedClusterMat[sel] = c
    cId = numpy.where(cIds==i)[0][0]
-   print 'cId: %s, mean:%.2f, median: %.2f, min:%.2f'%(c, uMeans[cId], uMedians[cId], uMins[cId])
+  print('cId: {}, mean: {:.2f}, median: {:.2f}, min: {:.2f}'.format(c, uMeans[cId], uMedians[cId], uMins[cId]))
   numpy.save('clusterMat.npy', sortedClusterMat)
-  SOMTools.plotMat(sortedClusterMat, 'clusterMat.pdf', interpolation='nearest')
+  SOM3DTools.plotMat(sortedClusterMat, 'clusterMat.pdf', interpolation='nearest')
   return sortedClusterMat
 
 def main():
