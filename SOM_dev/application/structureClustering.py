@@ -10,7 +10,7 @@ import SOM
 import glob
 #from newProtocolModule import *
 from SOMTools import *
-import cPickle
+import pickle
 import os
 
 relearn = False
@@ -66,11 +66,11 @@ if glob.glob('inputMatrix.dat') == []:
 # inputMatrix = inputMatrix.compress(mask, axis=1)
 
  inMfile = open('inputMatrix.dat', 'w')
- cPickle.dump(inputMatrix, inMfile)
+ pickle.dump(inputMatrix, inMfile)
  inMfile.close()
 else:
  inMfile = open('inputMatrix.dat')
- inputMatrix = cPickle.load(inMfile)
+ inputMatrix = pickle.load(inMfile)
  inMfile.close()
 
 #Learning #############################################################################################################
