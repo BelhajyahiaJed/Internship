@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 import numpy
 import IO
-import ConfigParser
+import configparser
 import sys
 import SOMTools
 
 configFileName = sys.argv[1]
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config.read(configFileName)
 
 nframe = Config.getint('rmsdMap', 'nframes')
