@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 from SOMTools import *
-import np as np
+import numpy as np
 import pickle
-import ConfigParser
+import configparser
 import sys
 import itertools
 
 configFileName = sys.argv[1]
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config.read(configFileName)
 
 infile = Config.get('dataProjection', 'dataFile')
@@ -41,7 +41,7 @@ if data.shape[0] == bmuCoordinates.shape[0]:
  flatten_map = np.concatenate((smap.reshape(X*Y*Z,cardinal), np.atleast_2d(dataMap.reshape(X*Y*Z)).T), axis=1)
  np.savetxt('%s.txt'%outFileName, flatten_map)
 else:
- ##updated the syntax of the print function   
+ ##updated the syntax of the print functionn
     print('Shape mismatch between data ({}) and bmuCoordinates ({})!'.format(data.shape[0], bmuCoordinates.shape[0]))
     
 

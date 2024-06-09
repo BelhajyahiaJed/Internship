@@ -1,0 +1,7 @@
+{
+    "python.analysis.extraPaths": [
+        "./application/makeVectorsFromdcd_",
+        "./application/makeVectorsFromdcd_",
+        "./application/makeVectorsFromdcd_"
+    ]
+}

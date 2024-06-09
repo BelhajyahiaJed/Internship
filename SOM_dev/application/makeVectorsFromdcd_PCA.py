@@ -9,15 +9,15 @@ import SOM
 import glob
 #from newProtocolModule import *
 from SOMTools import *
-import cPickle
+import pickle
 import os
-import ConfigParser
+import configparser
 import sys
-import PCA
+import PCA # type: ignore
 from multiprocessing import Pool
 
 configFileName = sys.argv[1]
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config.read(configFileName)
 
 nframe = Config.getint('makeVectors', 'nframes')
