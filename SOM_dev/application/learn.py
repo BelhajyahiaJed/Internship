@@ -10,13 +10,14 @@ import SOM
 import parallelSOM
 import glob
 from SOMTools import *
-import cPickle
+import pickle
 import os
-import ConfigParser
+#
+import configparser
 import sys
 
 configFileName = sys.argv[1]
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config.read(configFileName)
 
 inputMatrixFileName = Config.get('learn', 'inputMatrixFileName')
@@ -31,13 +32,13 @@ autoSizeMap = Config.getboolean('learn', 'autoSizeMap')
 
 
 if glob.glob(inputMatrixFileName) == []:
- print 'No inputMatrix.dat file!'
+ print ('No inputMatrix.dat file!')
 else:
  if inputMatrixFileName.split('.')[1] == 'npy':
   inputMatrix = numpy.load(inputMatrixFileName)
  else:
   inMfile = open(inputMatrixFileName)
-  inputMatrix = cPickle.load(inMfile)
+  inputMatrix = pickle.load(inMfile)
   inMfile.close()
 
 mapFileName = 'map_*.dat'
@@ -48,7 +49,7 @@ if glob.glob(mapFileName) == []:
  som.learn(nSnapshots = nSnapshots)
 else:
  mapFileName = glob.glob(mapFileName)[0]
- print "Map file: %s"%mapFileName
+ print ("Map file: %s"%mapFileName)
  som = SOM.SOM3D(inputMatrix, range(inputMatrix.shape[0]), mapFileName=mapFileName, metric='euclidean', autoParam = autoParam, sort2ndPhase=sort2ndPhase, toricMap=toricMap, randomInit=randomInit, autoSizeMap=autoSizeMap)
  if relearn:
   som.learn(nSnapshots = nSnapshots)
