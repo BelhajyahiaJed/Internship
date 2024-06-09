@@ -111,7 +111,7 @@ def getROC(ligNames, motif, FileName, uValues, getCompounds = getCompounds):
  return R, AUC
 
 def main():
- uMatrix= numpyy.load('uMatrix.npy')
+ uMatrix= numpy.load('uMatrix.npy')
  bmuProb = 1 - numpy.load('bmuProb.npy')
  bmuCoordinates = numpy.load('bmuCoordinates.npy')
  ligNames = numpy.load('names.npy')
