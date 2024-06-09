@@ -8,7 +8,8 @@ outFile = open('allPockets.mol2', 'w')
 for fn in inFiles:
  f = open(fn)
  d = fn.split('/')[0]
- print d
+ #correction of the print function
+ print (d)
  mol2f = open('%s/dp.mol2'%d)
  outFile.write('@<TRIPOS>MOLECULE\n%s\n@<TRIPOS>ATOM'%d)
  c = 0
