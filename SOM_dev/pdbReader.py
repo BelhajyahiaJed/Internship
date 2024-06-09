@@ -135,7 +135,7 @@ class PdbReader:
   try:
    return coord
   except UnboundLocalError:
-   print "No coordinate for the given atom"
+   print ("No coordinate for the given atom")
 
  def getChainIds(self):
   """
