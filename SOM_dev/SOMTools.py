@@ -272,7 +272,7 @@ def minPath(matrix, gradThreshold):
    try:
     i,j = path[r]
    except IndexError:
-    print ('BREAK !!!!!')
+    print ("BREAK !!!!!")
     break
   if (i,j) not in outPath:
    outPath.append((i,j))

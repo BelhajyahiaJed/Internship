@@ -75,7 +75,7 @@ class Structure(object):
     wfunc=f.write
     wendl='\n'
   else:
-   wfunc=print_func
+   wfunc=print
    wendl=''
   
   if type=='pdb':
@@ -147,7 +147,7 @@ class Trajectory(object):
   As of yet, only CHARMM format in big-endian form is supported (with both 32b and 64b support).
   """
   if verbose or self.verbose:
-   print "Loading dcd file..."
+   print ("Loading dcd file...")
 
   def unpackRead(string,fd):
    """ Read the next bytes from a binary file corresponding to the given format string """
@@ -237,7 +237,7 @@ class Trajectory(object):
     wfunc=f.write
     wendl='\n'
    else:
-    wfunc=print_func
+    wfunc=print
     wendl=''
    
    nframe,natom=self.array.shape
@@ -252,7 +252,7 @@ class Trajectory(object):
      wfunc("ATOM  %(natom) 5d %(aname)s %(rname)s %(chain)s%(rnum) 4i    %(x) 8.3f%(y) 8.3f%(z) 8.3f  1.00%(beta)6.2f     %(segid)s%(wendl)s"%{ \
       'natom':count, \
       'aname':aname, \
-      'rname':rmame, \
+      'rname':rname, \
       'chain':chain, \
       'rnum':rnum,   \
       'x':x, \
@@ -263,7 +263,7 @@ class Trajectory(object):
       'wendl':wendl \
       })
     wfunc('ENDMDL'+wendl)
-   if file != None:
+   if f != None:
     f.close()
   
   elif type == 'dcd':
@@ -342,7 +342,7 @@ class Trajectory(object):
   Compute the mean coordinates of all frames.
   """
   if self.verbose:
-   print "Computing mean structure..."
+   print ("Computing mean structure...")
   self.mean=numpy.mean(self.array,axis=0)
   return self.mean
 
@@ -354,7 +354,7 @@ class Trajectory(object):
   if self.mean is None:
    self.getMean()
   if self.verbose:
-   print "Computing covariance matrix..."
+   print ("Computing covariance matrix...")
   M=self.array-self.mean[None]
   self.covariance=numpy.dot(M.T,M)
   return self.covariance
@@ -367,7 +367,7 @@ class Trajectory(object):
   if self.covariance is None:
    self.getCovariance()
   if self.verbose:
-   print "Computing correlation matrix..."
+   print ("Computing correlation matrix...")
 #  stdev=numpy.sqrt(numpy.diag(self.covariance))
 #  self.correlation=numpy.empty(self.covariance.shape)
 #  for item,cov in numpy.ndenumerate(self.covariance):
@@ -387,7 +387,7 @@ class Trajectory(object):
   Z=self.array[:,zindices]
   coord=numpy.asarray([X,Y,Z])
   distmat=numpy.zeros((self.natom,self.natom,self.nframe),dtype="float32")
-  couple=itertools.combinations(xrange(self.natom),2)
+  couple=itertools.combinations(range(self.natom),2)
   for i,j in couple:
    val=numpy.sqrt(numpy.sum((coord[:,:,i]-coord[:,:,j])**2,axis=0))
    distmat[i,j]=val
@@ -408,7 +408,7 @@ class Trajectory(object):
   else:
    tar=self.array[template,:]
   if self.verbose:
-   print "Aligning..."
+   print ("Aligning...")
   xi=range(0,3*self.natom,3)
   yi=range(1,3*self.natom,3)
   zi=range(2,3*self.natom,3)
